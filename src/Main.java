@@ -5,7 +5,7 @@ import processing.core.PApplet;
 public class Main extends PApplet{
 
   private Matrix matrix;
-  private final int size = 10;
+  private final int size = 50;
   private final int resolution = 400;
   private final int d = resolution / size;
 

@@ -16,13 +16,13 @@ public class FallingPixel extends Pixel {
   public List<Change> process(Matrix m, int x, int y) {
     final Pixel below = m.get(x, y + 1);
 
-    if (below.getClass() != WallPixel.class) {
+    if (below.getClass() == WallPixel.class || below.getClass() == FallingPixel.class) {
+      return Collections.emptyList();
+    } else {
       final ArrayList<Change> changes = new ArrayList<>();
       changes.add(new Change(x, y, new Pixel()));
       changes.add(new Change(x, y + 1, new FallingPixel()));
       return changes;
-    } else {
-      return Collections.emptyList();
     }
   }
 
