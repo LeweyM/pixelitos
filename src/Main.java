@@ -1,5 +1,5 @@
 import pixel.Matrix;
-import pixel.SeaWeedPixels;
+import pixel.SandPixel;
 import processing.core.PApplet;
 
 public class Main extends PApplet{
@@ -17,6 +17,7 @@ public class Main extends PApplet{
   public void setup() {
     super.setup();
     matrix = new Matrix(size);
+//    frameRate(10);
   }
 
   public void draw(){
@@ -25,7 +26,7 @@ public class Main extends PApplet{
     drawCells();
     if (mousePressed) {
       ellipse(mouseX, mouseY, 20, 20);
-      matrix.set(mouseX/d, mouseY/d, new SeaWeedPixels());
+      matrix.set(mouseX/d, mouseY/d, new SandPixel());
     }
   }
 
