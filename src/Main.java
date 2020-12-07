@@ -1,5 +1,5 @@
-import pixel.FallingPixel;
 import pixel.Matrix;
+import pixel.SeaWeedPixels;
 import processing.core.PApplet;
 
 public class Main extends PApplet{
@@ -25,7 +25,7 @@ public class Main extends PApplet{
     drawCells();
     if (mousePressed) {
       ellipse(mouseX, mouseY, 20, 20);
-      matrix.set(mouseX/d, mouseY/d, new FallingPixel());
+      matrix.set(mouseX/d, mouseY/d, new SeaWeedPixels());
     }
   }
 
