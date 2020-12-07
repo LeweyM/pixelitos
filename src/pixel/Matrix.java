@@ -39,6 +39,7 @@ public class Matrix {
   }
 
   public void set(int x, int y, Pixel p) {
+    if (y >= size || y < 0 || x >= size || x < 0) return;
     pixels[index(x, y)] = p;
   }
 
