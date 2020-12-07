@@ -27,4 +27,8 @@ public class Pixel {
   public boolean isSoil() {
     return this.getClass() == SoilPixel.class;
   }
+
+  public boolean isCanopy() {
+    return this.getClass() == CanopyPixel.class;
+  }
 }

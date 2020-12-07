@@ -7,6 +7,7 @@ import pixel.Matrix;
 import pixel.Pixel;
 import pixel.SandPixel;
 import pixel.SeaWeedPixel;
+import pixel.SeedPixel;
 import pixel.SoilPixel;
 import pixel.WallPixel;
 import processing.core.PApplet;
@@ -20,6 +21,7 @@ public class Main extends PApplet {
   private List<PixelTypeButton> pixelButtons;
   private Pixel defaultPixel;
   private boolean eraseMode = false;
+  private Pixel[] pixelTypes;
 
   public void settings() {
     size(resolution, resolution);
@@ -28,6 +30,14 @@ public class Main extends PApplet {
   @Override
   public void setup() {
     super.setup();
+    pixelTypes = new Pixel[]{
+        new SeedPixel(),
+        new SoilPixel(),
+        new FallingPixel(),
+        new SandPixel(),
+        new WallPixel(),
+        new SeaWeedPixel(),
+    };
     defaultPixel = new SandPixel();
     matrix = new Matrix(size);
     setupButtons();
@@ -88,15 +98,8 @@ public class Main extends PApplet {
 
   private void setupButtons() {
     pixelButtons = new ArrayList<>();
-    Pixel[] pixels = new Pixel[]{
-        new SoilPixel(),
-        new FallingPixel(),
-        new SandPixel(),
-        new WallPixel(),
-        new SeaWeedPixel(),
-    };
-    for (int i = 0; i < pixels.length; i++) {
-      setPixelTypeButton(30 * i + 30, 30, pixels[i]);
+    for (int i = 0; i < pixelTypes.length; i++) {
+      setPixelTypeButton(30 * i + 30, 30, pixelTypes[i]);
     }
   }
 

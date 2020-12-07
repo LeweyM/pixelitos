@@ -7,6 +7,7 @@ import processing.core.PApplet;
 
 public class SoilPixel extends Pixel {
 
+  private static final int MAX_LIFEPOINTS = 200;
   private int lifePoints;
 
   @Override
@@ -51,6 +52,10 @@ public class SoilPixel extends Pixel {
     }
   }
 
+  public boolean fullyAlive() {
+    return lifePoints == MAX_LIFEPOINTS;
+  }
+
   private void limitedGrow() {
     this.lifePoints = Math.min(this.lifePoints + 1, 80);
   }
@@ -60,7 +65,7 @@ public class SoilPixel extends Pixel {
   }
 
   private void grow() {
-    this.lifePoints = Math.min(this.lifePoints + 1, 200);
+    this.lifePoints = Math.min(this.lifePoints + 1, MAX_LIFEPOINTS);
   }
 
 }
