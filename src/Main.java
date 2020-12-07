@@ -16,6 +16,7 @@ public class Main extends PApplet {
   private final int d = resolution / size;
   private List<PixelTypeButton> pixelButtons;
   private Pixel defaultPixel;
+  private boolean eraseMode = false;
 
   public void settings() {
     size(resolution, resolution);
@@ -34,14 +35,42 @@ public class Main extends PApplet {
     matrix = matrix.next();
     background(0);
     drawCells();
+    paintMouse();
+    click();
+    buttons();
+  }
+
+  private void paintMouse() {
     fill(100, 100, 100);
     ellipse(mouseX, mouseY, 15, 15);
+  }
+
+  private void click() {
     if (mousePressed) {
       final int x = mouseX / d;
       final int y = mouseY / d;
-      matrix.set(x, y, this.defaultPixel);
+      if (this.eraseMode) {
+        matrix.set(x, y, new Pixel());
+      } else {
+        matrix.set(x, y, this.defaultPixel);
+      }
     }
-    buttons();
+  }
+
+  @Override
+  public void mousePressed() {
+    super.mousePressed();
+    final int x = mouseX / d;
+    final int y = mouseY / d;
+    if (matrix.get(x, y).getClass() != Pixel.class) {
+      this.eraseMode = true;
+    }
+  }
+
+  @Override
+  public void mouseReleased() {
+    super.mouseReleased();
+    this.eraseMode = false;
   }
 
   private void buttons() {
