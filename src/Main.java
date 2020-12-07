@@ -1,3 +1,5 @@
+import pixel.FallingPixel;
+import pixel.Matrix;
 import processing.core.PApplet;
 
 public class Main extends PApplet{
@@ -18,11 +20,12 @@ public class Main extends PApplet{
   }
 
   public void draw(){
+    matrix = matrix.next();
     background(0);
     drawCells();
     if (mousePressed) {
       ellipse(mouseX, mouseY, 20, 20);
-      matrix.set(mouseX/d, mouseY/d, new WallPixel());
+      matrix.set(mouseX/d, mouseY/d, new FallingPixel());
     }
   }
 
