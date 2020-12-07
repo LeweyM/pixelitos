@@ -7,6 +7,7 @@ import pixel.Matrix;
 import pixel.Pixel;
 import pixel.SandPixel;
 import pixel.SeaWeedPixel;
+import pixel.SoilPixel;
 import pixel.WallPixel;
 import processing.core.PApplet;
 
@@ -88,6 +89,7 @@ public class Main extends PApplet {
   private void setupButtons() {
     pixelButtons = new ArrayList<>();
     Pixel[] pixels = new Pixel[]{
+        new SoilPixel(),
         new FallingPixel(),
         new SandPixel(),
         new WallPixel(),

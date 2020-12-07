@@ -19,4 +19,12 @@ public class Pixel {
   public Pixel resolveConflict(Pixel other) {
     return other;
   }
+
+  public boolean isEmpty() {
+    return this.getClass() == EMPTY_PIXEL;
+  }
+
+  public boolean isSoil() {
+    return this.getClass() == SoilPixel.class;
+  }
 }
