@@ -6,8 +6,10 @@ import processing.core.PApplet;
 
 public class Pixel {
 
+  public static final Class<Pixel> EMPTY_PIXEL = Pixel.class;
+
   public int color(PApplet applet) {
-    return applet.color(0, 0, 0);
+    return applet.color(255, 255, 255);
   }
 
   public List<Change> process(Matrix m, int x, int y) {

@@ -16,7 +16,7 @@ public class FallingPixel extends Pixel {
   public List<Change> process(Matrix m, int x, int y) {
     final Pixel below = m.get(x, y + 1);
 
-    if (below.getClass() == WallPixel.class || below.getClass() == FallingPixel.class) {
+    if (below.getClass() != EMPTY_PIXEL) {
       return Collections.emptyList();
     } else {
       final ArrayList<Change> changes = new ArrayList<>();

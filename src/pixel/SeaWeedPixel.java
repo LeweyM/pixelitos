@@ -18,11 +18,11 @@ public class SeaWeedPixel extends Pixel {
     final Pixel belowLeft = m.get(x-1, y + 1);
     final Pixel belowRight = m.get(x+1, y + 1);
 
-    if (below.getClass() == WallPixel.class || below.getClass() == SeaWeedPixel.class) {
+    if (blockedByPixel(below)) {
       return Collections.emptyList();
-    } else if (belowLeft.getClass() == WallPixel.class || belowLeft.getClass() == SeaWeedPixel.class) {
+    } else if (blockedByPixel(belowLeft)) {
       return Collections.emptyList();
-    } else if (belowRight.getClass() == WallPixel.class || belowRight.getClass() == SeaWeedPixel.class) {
+    } else if (blockedByPixel(belowRight)) {
       return Collections.emptyList();
     } else {
       final ArrayList<Change> changes = new ArrayList<>();
@@ -30,6 +30,10 @@ public class SeaWeedPixel extends Pixel {
       changes.add(new Change(x, y + 1, new SeaWeedPixel()));
       return changes;
     }
+  }
+
+  private boolean blockedByPixel(Pixel below) {
+    return below.getClass() != EMPTY_PIXEL;
   }
 
 }

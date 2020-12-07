@@ -1,3 +1,5 @@
+import static pixel.Pixel.EMPTY_PIXEL;
+
 import java.util.ArrayList;
 import java.util.List;
 import pixel.FallingPixel;
@@ -62,7 +64,7 @@ public class Main extends PApplet {
     super.mousePressed();
     final int x = mouseX / d;
     final int y = mouseY / d;
-    if (matrix.get(x, y).getClass() != Pixel.class) {
+    if (matrix.get(x, y).getClass() != EMPTY_PIXEL) {
       this.eraseMode = true;
     }
   }
