@@ -22,20 +22,20 @@ public class Main extends PApplet{
     drawCells();
     if (mousePressed) {
       ellipse(mouseX, mouseY, 20, 20);
-      matrix.set(mouseX/d, mouseY/d, 1);
+      matrix.set(mouseX/d, mouseY/d, new WallPixel());
     }
   }
 
   private void drawCells() {
     for (int y = 0; y < size; y++) {
       for (int x = 0; x < size; x++) {
-        draw(x, y, matrix.get(x, y));
+        draw(x, y, matrix.get(x, y).color(this));
       }
     }
   }
 
-  private void draw(int x, int y, int i) {
-    fill(matrix.getColor(x, y, this));
+  private void draw(int x, int y, int color) {
+    fill(color);
     noStroke();
     rect(x* d, y* d, d, d);
   }
