@@ -6,29 +6,35 @@ import java.util.Stack;
 public class MarkedBufferMatrix implements Matrix {
 
   private final int size;
+  private final int width;
+  private final int height;
   private final Pixel[] pixels;
 
-  public MarkedBufferMatrix(int size) {
-    pixels = new Pixel[size * size];
-    this.size = size;
-    for (int i = 0; i < size * size; i++) {
+  public MarkedBufferMatrix(int width, int height) {
+    pixels = new Pixel[width * height];
+    this.size = width * height;
+    this.width = width;
+    this.height = height;
+    for (int i = 0; i < size; i++) {
       pixels[i] = new Pixel();
     }
   }
 
-  private MarkedBufferMatrix(int size, Pixel[] pixels) {
-    this.size = size;
+  private MarkedBufferMatrix(int width, int height, Pixel[] pixels) {
+    this.size = width * height;
+    this.width = width;
+    this.height = height;
     this.pixels = pixels;
   }
 
   public Matrix next() {
     Stack<List<Change>> changes = new Stack<>();
-    boolean[] marked = new boolean[size*size];
+    boolean[] marked = new boolean[size];
 
     Matrix next = copy();
 
-    for (int x = 0; x < size; x++) {
-      for (int y = 0; y < size; y++) {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
         changes.add(get(x, y).process(this, x, y));
       }
     }
@@ -54,22 +60,22 @@ public class MarkedBufferMatrix implements Matrix {
   }
 
   public Pixel get(int x, int y) {
-    if (y >= size || y < 0 || x >= size || x < 0) return new WallPixel();
+    if (y >= height || y < 0 || x >= width || x < 0) return new WallPixel();
     return pixels[index(x, y)];
   }
 
   public void set(int x, int y, Pixel p) {
-    if (y >= size || y < 0 || x >= size || x < 0) return;
+    if (y >= height || y < 0 || x >= width || x < 0) return;
     pixels[index(x, y)] = p;
   }
 
   private int index(int x, int y) {
-    return x + (y * size);
+    return x + (y * width);
   }
 
   private MarkedBufferMatrix copy() {
-    Pixel[] nextCells = new Pixel[size*size];
+    Pixel[] nextCells = new Pixel[size];
     System.arraycopy(pixels, 0, nextCells, 0, pixels.length);
-    return new MarkedBufferMatrix(size, nextCells);
+    return new MarkedBufferMatrix(width, height, nextCells);
   }
 }

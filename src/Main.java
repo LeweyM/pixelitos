@@ -17,8 +17,9 @@ public class Main extends PApplet {
 
   private Matrix matrix;
   private final int size = 50;
+  private final int aspectRatio = 2;
   private final int resolution = 800;
-  private final int pixelSize = resolution / size;
+  private final int pixelSize = 400 / size;
   private Pixel defaultPixel;
   private boolean eraseMode = false;
   private Instant startedThrottling = Instant.now();
@@ -26,7 +27,7 @@ public class Main extends PApplet {
   private PixelTypeButton[] buttons;
 
   public void settings() {
-    size(resolution, resolution);
+    size(800, resolution / 2);
   }
 
   @Override
@@ -41,7 +42,7 @@ public class Main extends PApplet {
         new PixelTypeButton(new ButterFlyPixel(), 100),
     };
     defaultPixel = new SandPixel();
-    matrix = new MarkedBufferMatrix(size);
+    matrix = new MarkedBufferMatrix(size*aspectRatio, size);
 //    frameRate(10);
   }
 
@@ -127,8 +128,8 @@ public class Main extends PApplet {
   }
 
   private void drawCells() {
-    for (int y = 0; y < size; y++) {
-      for (int x = 0; x < size; x++) {
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
         final Pixel pixel = matrix.get(x, y);
         if (pixel.isEmpty()) {
           draw(x, y, color(174 + (y * 3), 214, 255));
