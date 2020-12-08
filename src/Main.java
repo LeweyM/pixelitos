@@ -16,10 +16,10 @@ import processing.core.PGraphics;
 
 public class Main extends PApplet {
 
-  private Matrix matrix;
-  private final int size = 50;
-  private final int aspectRatio = 2;
-  private final int resolution = 400;
+  private MarkedBufferMatrix matrix;
+  private final int size = 100;
+  private final int aspectRatio = 3;
+  private final int resolution = 600;
   private final int pixelSize = resolution / size;
   private Pixel defaultPixel;
   private boolean eraseMode = false;
@@ -28,7 +28,7 @@ public class Main extends PApplet {
   private PixelTypeButton[] buttons;
 
   public void settings() {
-    size(resolution * aspectRatio, resolution);
+    size(resolution * aspectRatio, resolution, JAVA2D);
   }
 
   @Override
@@ -48,9 +48,17 @@ public class Main extends PApplet {
   }
 
   public void draw() {
-    matrix = matrix.next();
-    paintBackground();
-    drawCells();
+//    paintBackground();
+
+//    background(100, 50, 10);
+    final PGraphics graphics = createGraphics(width, height, JAVA2D);
+    graphics.noStroke();
+    graphics.beginDraw();
+    matrix = (MarkedBufferMatrix) matrix.next(graphics, pixelSize);
+    graphics.endDraw();
+    image(graphics, 0 ,0);
+
+//    drawCells();
     click();
     buttons();
     resetButton();

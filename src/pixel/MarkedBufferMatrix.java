@@ -2,6 +2,7 @@ package pixel;
 
 import java.util.List;
 import java.util.Stack;
+import processing.core.PGraphics;
 
 public class MarkedBufferMatrix implements Matrix {
 
@@ -27,7 +28,7 @@ public class MarkedBufferMatrix implements Matrix {
     this.pixels = pixels;
   }
 
-  public Matrix next() {
+  public Matrix next(PGraphics chunk, int pixSize) {
     Stack<List<Change>> changes = new Stack<>();
     boolean[] marked = new boolean[size];
 
@@ -48,13 +49,31 @@ public class MarkedBufferMatrix implements Matrix {
           // todo: density/water/etc.
         } else {
           // todo: conflict resolution
-          change.forEach(c -> next.set(c.x(), c.y(), c.pixel));
+          change.forEach(c -> {
+            next.set(c.x(), c.y(), c.pixel);
+          });
           marked[index(destination.x(), destination.y())] = true;
         }
       } else {
-        change.forEach(c -> next.set(c.x(), c.y(), c.pixel));
+        change.forEach(c -> {
+          next.set(c.x(), c.y(), c.pixel);
+        });
       }
     });
+
+    chunk.noStroke();
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        Pixel pixel = get(x, y);
+        if (pixel.isEmpty()) {
+          chunk.fill(y*5, 214, 255);
+          chunk.rect(x*pixSize, y*pixSize, pixSize, pixSize);
+        } else {
+          chunk.fill(pixel.red(), pixel.green(), pixel.blue());
+          chunk.rect(x*pixSize, y*pixSize, pixSize, pixSize);
+        }
+      }
+    }
 
     return next;
   }

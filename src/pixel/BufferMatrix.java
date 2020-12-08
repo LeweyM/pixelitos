@@ -1,6 +1,7 @@
 package pixel;
 
 import java.util.Stack;
+import processing.core.PGraphics;
 
 public class BufferMatrix implements Matrix {
 
@@ -36,6 +37,11 @@ public class BufferMatrix implements Matrix {
     });
 
     return next;
+  }
+
+  @Override
+  public Matrix next(PGraphics graphics, int pixSize) {
+    return null;
   }
 
   public Pixel get(int x, int y) {
