@@ -28,6 +28,10 @@ public class Pixel {
     return this.getClass() == SoilPixel.class;
   }
 
+  public boolean isSolid() {
+    return false;
+  }
+
   public boolean isCanopy() {
     return this.getClass() == CanopyPixel.class;
   }

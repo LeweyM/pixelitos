@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import processing.core.PApplet;
 
-public class SoilPixel extends Pixel {
+public class SoilPixel extends SolidPixel {
 
   private static final int MAX_LIFEPOINTS = 200;
   private int lifePoints;

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import processing.core.PApplet;
 
-public class SandPixel extends Pixel {
+public class SandPixel extends SolidPixel {
 
   @Override
   public int color(PApplet applet) {

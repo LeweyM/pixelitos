@@ -1,6 +1,5 @@
 package pixel;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import processing.core.PApplet;
@@ -19,10 +18,10 @@ public class FallingPixel extends Pixel {
     if (below.getClass() != EMPTY_PIXEL) {
       return Collections.emptyList();
     } else {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, new Pixel()));
-      changes.add(new Change(x, y + 1, new FallingPixel()));
-      return changes;
+      return Utils.listOfChanges(
+          new Change(x, y, new Pixel()),
+          new Change(x, y + 1, new FallingPixel())
+      );
     }
   }
 
