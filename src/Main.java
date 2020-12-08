@@ -2,6 +2,7 @@ import static pixel.Pixel.EMPTY_PIXEL;
 
 import java.util.ArrayList;
 import java.util.List;
+import pixel.BufferMatrix;
 import pixel.FallingPixel;
 import pixel.Matrix;
 import pixel.Pixel;
@@ -39,7 +40,7 @@ public class Main extends PApplet {
         new SeaWeedPixel(),
     };
     defaultPixel = new SandPixel();
-    matrix = new Matrix(size);
+    matrix = new BufferMatrix(size);
     setupButtons();
 //    frameRate(10);
   }
