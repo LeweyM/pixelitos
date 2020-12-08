@@ -10,6 +10,21 @@ public class TreePixel extends SolidPixel {
   private int lifePoints;
 
   @Override
+  public int red() {
+    return 100;
+  }
+
+  @Override
+  public int green() {
+    return 10;
+  }
+
+  @Override
+  public int blue() {
+    return 10;
+  }
+
+  @Override
   public int color(PApplet applet) {
     return applet.color(10, 10, 10);
   }

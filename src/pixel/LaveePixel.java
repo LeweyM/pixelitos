@@ -8,6 +8,21 @@ public class LaveePixel extends SolidPixel {
   private int age = 0;
 
   @Override
+  public int red() {
+    return 150;
+  }
+
+  @Override
+  public int green() {
+    return 150;
+  }
+
+  @Override
+  public int blue() {
+    return 150;
+  }
+
+  @Override
   public int color(PApplet applet) {
     return applet.color(200);
   }

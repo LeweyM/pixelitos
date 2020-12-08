@@ -9,15 +9,15 @@ public class Pixel {
   public static final Class<Pixel> EMPTY_PIXEL = Pixel.class;
 
   public int red() {
-    return 255;
+    return 10;
   }
 
   public int green() {
-    return 255;
+    return 50;
   }
 
   public int blue() {
-    return 255;
+    return 240;
   }
 
   @Deprecated

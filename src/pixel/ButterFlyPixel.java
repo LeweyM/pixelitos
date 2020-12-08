@@ -27,6 +27,21 @@ public class ButterFlyPixel extends Pixel {
   }
 
   @Override
+  public int red() {
+    return 200;
+  }
+
+  @Override
+  public int green() {
+    return 200;
+  }
+
+  @Override
+  public int blue() {
+    return 200;
+  }
+
+  @Override
   public List<Change> process(Matrix m, int x, int y) {
     age++;
 

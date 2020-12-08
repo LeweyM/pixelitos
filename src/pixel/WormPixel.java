@@ -24,6 +24,21 @@ public class WormPixel extends Pixel {
   }
 
   @Override
+  public int red() {
+    return 200;
+  }
+
+  @Override
+  public int green() {
+    return 10;
+  }
+
+  @Override
+  public int blue() {
+    return 25;
+  }
+
+  @Override
   public int color(PApplet applet) {
     return applet.color(200, 10, 25);
   }

@@ -15,6 +15,20 @@ public class SeedPixel extends FallingPixel {
   }
 
   @Override
+  public int red() {
+    return 100;
+  }
+
+  @Override
+  public int green() {
+    return 0;
+  }
+
+  @Override
+  public int blue() {
+    return 0;
+  }
+  @Override
   public List<Change> process(Matrix m, int x, int y) {
     final Pixel below = m.get(x, y + 1);
 

@@ -10,6 +10,21 @@ public class CanopyPixel extends SolidPixel {
   int age = 0;
 
   @Override
+  public int red() {
+    return 102;
+  }
+
+  @Override
+  public int green() {
+    return 187;
+  }
+
+  @Override
+  public int blue() {
+    return 0;
+  }
+
+  @Override
   public int color(PApplet applet) {
     return applet.color(102, 187, 0);
   }
