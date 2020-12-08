@@ -3,6 +3,7 @@ import static pixel.Pixel.EMPTY_PIXEL;
 import java.time.Duration;
 import java.time.Instant;
 import pixel.ButterFlyPixel;
+import pixel.FirePixel;
 import pixel.MarkedBufferMatrix;
 import pixel.Matrix;
 import pixel.Pixel;
@@ -10,6 +11,7 @@ import pixel.SandPixel;
 import pixel.SeedPixel;
 import pixel.SoilPixel;
 import pixel.WallPixel;
+import pixel.WaterPixel;
 import pixel.WormPixel;
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -41,6 +43,7 @@ public class Main extends PApplet {
         new PixelTypeButton(new WallPixel()),
         new PixelTypeButton(new WormPixel(), 100),
         new PixelTypeButton(new ButterFlyPixel(), 100),
+        new PixelTypeButton(new WaterPixel(), 1),
     };
     defaultPixel = new SandPixel();
     matrix = new MarkedBufferMatrix(size*aspectRatio, size);
@@ -48,9 +51,6 @@ public class Main extends PApplet {
   }
 
   public void draw() {
-//    paintBackground();
-
-//    background(100, 50, 10);
     final PGraphics graphics = createGraphics(width, height, JAVA2D);
     graphics.noStroke();
     graphics.beginDraw();
