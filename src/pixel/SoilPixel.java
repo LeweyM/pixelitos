@@ -24,11 +24,18 @@ public class SoilPixel extends SolidPixel {
     final Pixel belowLeft = m.get(x-1, y + 1);
     final Pixel belowRight = m.get(x+1, y + 1);
 
+    if (fullyAlive()) {
+      // todo: optimize
+      if (Math.random() > 0.9999) {
+        return Utils.listOfChanges(new Change(x, y-1, new WormPixel()));
+      }
+    }
+
     if (oneUp.isEmpty() && oneDown.isSoil() && twoDown.isSoil()) {
       grow();
     } else if (twoUp.isEmpty() && oneDown.isSoil() && twoDown.isSoil()) {
       limitedGrow() ;
-    }else {
+    } else {
       die();
     }
 
