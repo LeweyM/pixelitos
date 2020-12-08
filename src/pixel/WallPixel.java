@@ -1,12 +1,19 @@
 package pixel;
 
-import processing.core.PApplet;
-
 public class WallPixel extends SolidPixel {
 
   @Override
-  public int color(PApplet applet) {
-    return applet.color(10, 10, 10);
+  public int red() {
+    return 10;
   }
 
+  @Override
+  public int green() {
+    return 10;
+  }
+
+  @Override
+  public int blue() {
+    return 10;
+  }
 }
