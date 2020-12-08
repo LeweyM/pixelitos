@@ -12,14 +12,15 @@ import pixel.SoilPixel;
 import pixel.WallPixel;
 import pixel.WormPixel;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 public class Main extends PApplet {
 
   private Matrix matrix;
   private final int size = 50;
   private final int aspectRatio = 2;
-  private final int resolution = 800;
-  private final int pixelSize = 400 / size;
+  private final int resolution = 400;
+  private final int pixelSize = resolution / size;
   private Pixel defaultPixel;
   private boolean eraseMode = false;
   private Instant startedThrottling = Instant.now();
@@ -27,7 +28,7 @@ public class Main extends PApplet {
   private PixelTypeButton[] buttons;
 
   public void settings() {
-    size(800, resolution / 2);
+    size(resolution * aspectRatio, resolution);
   }
 
   @Override
@@ -48,11 +49,22 @@ public class Main extends PApplet {
 
   public void draw() {
     matrix = matrix.next();
-    background(0);
+    paintBackground();
     drawCells();
     click();
     buttons();
     resetButton();
+    fill(200);
+    text(frameRate,20,60);
+  }
+
+  private void paintBackground() {
+    int y = 0;
+    while (y < resolution) {
+      fill(0 + y, 214, 255);
+      rect(0, y, width, 50);
+      y += 50;
+    }
   }
 
   private void resetButton() {
@@ -127,12 +139,36 @@ public class Main extends PApplet {
     return pixel;
   }
 
+  private void drawCellsCHUNK() {
+    final PGraphics chunk = createGraphics(width, height);
+    chunk.beginDraw();
+    chunk.noStroke();
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        final Pixel pixel = matrix.get(x, y);
+        if (pixel.isEmpty()) {
+          drawCHUNK(x, y, color(174 + (y * 3), 214, 255), chunk);
+        } else {
+          drawCHUNK(x, y, pixel.color(this), chunk);
+        }
+      }
+    }
+    chunk.endDraw();
+    image(chunk, 0, 0, width, height);
+  }
+
+  private void drawCHUNK(int x, int y, int color, PGraphics chunk) {
+    chunk.fill(color);
+    chunk.rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+  }
+
   private void drawCells() {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         final Pixel pixel = matrix.get(x, y);
         if (pixel.isEmpty()) {
-          draw(x, y, color(174 + (y * 3), 214, 255));
+//          draw(x, y, color(174 + (y * 3), 214, 255));
         } else {
           draw(x, y, pixel.color(this));
         }
