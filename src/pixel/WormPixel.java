@@ -34,23 +34,40 @@ public class WormPixel extends Pixel {
 
     final Pixel below = m.get(x, y + 1);
     final Pixel side = m.get(x - direction, y);
-    final Pixel sideAndUp = m.get(x-direction, y-1);
+    final Pixel sideAndUp = m.get(x - direction, y - 1);
 
+    // die
     if (life > 20) {
       return Utils.listOfChanges(new Change(x, y, new Pixel()));
     }
 
-    if (below.isSolid()) {
-      if (side.isEmpty()) {
-        if (life == 10) {
+    if (life == 10) {
+
+      // lay egg
+      if (sideAndUp.isCanopy()) {
+        return Utils.listOfChanges(new Change(x - direction, y - 2, new LaveePixel()));
+      }
+
+      // climb tree
+      if (side.getClass() == TreePixel.class) {
+        return Utils.listOfChanges(new Change(x, y - 1, new WormPixel(direction)));
+      }
+
+      if (below.isSolid()) {
+        // walk
+        if (side.isEmpty()) {
           return Utils.listOfChanges(new Change(x - direction, y, new WormPixel(direction)));
         }
-      }
-      if (sideAndUp.isEmpty()) {
-        if (life == 10) {
-          return Utils.listOfChanges(new Change(x - direction, y-1, new WormPixel(direction)));
+        //climb
+        if (sideAndUp.isEmpty()) {
+          return Utils.listOfChanges(new Change(x - direction, y - 1, new WormPixel(direction)));
         }
       }
+    }
+
+    //hold onto tree
+    if (side.getClass() == TreePixel.class) {
+      return Collections.emptyList();
     }
 
     if (!below.isEmpty()) {
@@ -58,7 +75,7 @@ public class WormPixel extends Pixel {
     } else {
       return Utils.listOfChanges(
           new Change(x, y, new Pixel()),
-          new Change(x, y + 1, new WormPixel())
+          new Change(x, y + 1, new WormPixel(direction))
       );
     }
   }

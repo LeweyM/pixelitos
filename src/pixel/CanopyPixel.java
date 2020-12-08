@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.stream.Stream;
 import processing.core.PApplet;
 
-public class CanopyPixel extends Pixel {
+public class CanopyPixel extends SolidPixel {
+  int age = 0;
 
   @Override
   public int color(PApplet applet) {
@@ -15,20 +16,29 @@ public class CanopyPixel extends Pixel {
 
   @Override
   public List<Change> process(Matrix m, int x, int y) {
-    final Pixel leftOne = m.get(x - 1, y);
-    final Pixel leftTwo = m.get(x - 2, y);
-    final Pixel downOneLeftOne = m.get(x - 1, y + 1);
-    final Pixel downOneLeftTwo = m.get(x - 2, y + 1);
+    age++;
 
-    if (m.get(x, y + 1).getClass() == TreePixel.class) {
-      return listOfChanges(
-          new Change(x + 1, y - 1, new CanopyPixel()),
-          new Change(x - 1, y - 1, new CanopyPixel())
-      );
-    }
+    final Pixel rightDown = m.get(x + 1, y + 1);
+    final Pixel rightRightDown = m.get(x + 2, y + 1);
+    final Pixel leftDown = m.get(x - 1, y + 1);
+    final Pixel leftLeftDown = m.get(x - 2, y + 1);
+    final Pixel below = m.get(x, y + 1);
 
-    if (Stream.of(leftOne, leftTwo, downOneLeftOne, downOneLeftTwo).anyMatch(Pixel::isCanopy)) {
-      return listOfChanges(new Change(x - 1, y, new CanopyPixel()));
+    if (age % 50 == 0) {
+      if (below.getClass() == TreePixel.class) {
+        return listOfChanges(
+            new Change(x + 1, y - 1, new CanopyPixel()),
+            new Change(x - 1, y - 1, new CanopyPixel())
+        );
+      }
+
+      if (Stream.of(leftDown, leftLeftDown).anyMatch(Pixel::isCanopy)) {
+        return listOfChanges(new Change(x + 1, y, new CanopyPixel()));
+      }
+
+      if (Stream.of(rightDown, rightRightDown).anyMatch(Pixel::isCanopy)) {
+        return listOfChanges(new Change(x - 1, y, new CanopyPixel()));
+      }
     }
 
     return super.process(m, x, y);

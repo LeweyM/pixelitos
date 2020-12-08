@@ -47,14 +47,17 @@ public class Main extends PApplet {
     matrix = matrix.next();
     background(0);
     drawCells();
-    paintMouse();
     click();
     buttons();
+    resetButton();
   }
 
-  private void paintMouse() {
+  private void resetButton() {
     fill(100, 100, 100);
-    ellipse(mouseX, mouseY, 15, 15);
+    ellipse(resolution - 30, 30, 15, 15);
+    if (mousePressed && dist(mouseX, mouseY, resolution - 30, 30) < 15) {
+      setup();
+    }
   }
 
   private void click() {
@@ -70,7 +73,7 @@ public class Main extends PApplet {
     if (this.eraseMode) {
       matrix.set(x, y, new Pixel());
     } else {
-      matrix.set(x, y, this.defaultPixel);
+      matrix.set(x, y, getNewPixel());
     }
   }
 
@@ -100,16 +103,17 @@ public class Main extends PApplet {
       fill(button.pixel.color(this));
       ellipse(x, 30, 15, 15);
       if (mousePressed && dist(mouseX, mouseY, x, 30) <= 15.0) {
-        setPixel(button.pixel);
+        this.defaultPixel = button.pixel;
         this.throttleSpeed = button.throttleSpeed();
       }
       x += 30;
     }
   }
 
-  private void setPixel(Pixel pixel) {
+  private Pixel getNewPixel() {
+    Pixel pixel = null;
     try {
-      this.defaultPixel = (Pixel) Class.forName(pixel.getClass().getName()).newInstance();
+      pixel = (Pixel) Class.forName(this.defaultPixel.getClass().getName()).newInstance();
     } catch (InstantiationException e) {
       e.printStackTrace();
     } catch (IllegalAccessException e) {
@@ -117,6 +121,7 @@ public class Main extends PApplet {
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
+    return pixel;
   }
 
   private void drawCells() {

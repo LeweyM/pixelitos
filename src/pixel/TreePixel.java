@@ -30,6 +30,7 @@ public class TreePixel extends Pixel {
   }
 
   private boolean blooms() {
+    // todo: optimize
     return Math.random() > 0.9;
   }
 
