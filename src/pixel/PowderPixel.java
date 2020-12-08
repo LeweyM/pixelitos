@@ -18,19 +18,19 @@ public abstract class PowderPixel extends SolidPixel {
     final Pixel belowLeft = m.get(x-1, y + 1);
     final Pixel belowRight = m.get(x+1, y + 1);
 
-    if (below.getClass() == EMPTY_PIXEL || !below.isSolid()) {
+    if (!below.isSolid()) {
       final ArrayList<Change> changes = new ArrayList<>();
       changes.add(new Change(x, y, below));
       changes.add(new Change(x, y + 1, this));
       return changes;
-    } else if (belowLeft.getClass() == EMPTY_PIXEL || !below.isSolid()) {
+    } else if (!belowLeft.isSolid()) {
       final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, below));
+      changes.add(new Change(x, y, belowLeft));
       changes.add(new Change(x-1, y + 1, this));
       return changes;
-    } else if (belowRight.getClass() == EMPTY_PIXEL || !below.isSolid()) {
+    } else if (!belowRight.isSolid()) {
       final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, below));
+      changes.add(new Change(x, y, belowRight));
       changes.add(new Change(x+1, y + 1, this));
       return changes;
     } else {

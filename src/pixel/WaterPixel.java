@@ -20,11 +20,17 @@ public class WaterPixel extends Pixel {
   }
 
   @Override
+  public boolean isSolid() {
+    return false;
+  }
+
+  @Override
   public List<Change> process(Matrix m, int x, int y) {
 
-    if (m.get(x, y + 1).isEmpty()) {
+    final Pixel other = m.get(x, y + 1);
+    if (other.isEmpty()) {
       return Utils.listOfChanges(
-          new Change(x, y, new Pixel()),
+          new Change(x, y, m.get(x, y + 1)),
           new Change(x, y + 1, new WaterPixel())
       );
     }
@@ -33,7 +39,7 @@ public class WaterPixel extends Pixel {
       for (int j = 0; j <= 1; j++) {
         if (m.get(x + i, y + j).isEmpty()) {
           return Utils.listOfChanges(
-              new Change(x, y, new Pixel()),
+              new Change(x, y, m.get(x, y + 1)),
               new Change(x + i, y + j, new WaterPixel())
           );
         }
