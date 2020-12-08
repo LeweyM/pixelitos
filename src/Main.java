@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pixel.BufferMatrix;
 import pixel.FallingPixel;
+import pixel.MarkedBufferMatrix;
 import pixel.Matrix;
 import pixel.Pixel;
 import pixel.SandPixel;
@@ -17,7 +18,7 @@ public class Main extends PApplet {
 
   private Matrix matrix;
   private final int size = 50;
-  private final int resolution = 400;
+  private final int resolution = 800;
   private final int d = resolution / size;
   private List<PixelTypeButton> pixelButtons;
   private Pixel defaultPixel;
@@ -40,7 +41,7 @@ public class Main extends PApplet {
         new SeaWeedPixel(),
     };
     defaultPixel = new SandPixel();
-    matrix = new BufferMatrix(size);
+    matrix = new MarkedBufferMatrix(size);
     setupButtons();
 //    frameRate(10);
   }

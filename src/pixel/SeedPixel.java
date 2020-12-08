@@ -1,5 +1,7 @@
 package pixel;
 
+import static pixel.Utils.listOfChanges;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,8 +18,11 @@ public class SeedPixel extends Pixel {
   public List<Change> process(Matrix m, int x, int y) {
     final Pixel below = m.get(x, y + 1);
 
-    if (below.isSoil()) {
+    if (!below.isEmpty() && !below.isSoil()) {
+      return listOfChanges(new Change(x, y, new Pixel()));
+    }
 
+    if (below.isSoil()) {
       SoilPixel soil = (SoilPixel) below;
       if (soil.fullyAlive() && germinates()) {
         final ArrayList<Change> changes = new ArrayList<>();
