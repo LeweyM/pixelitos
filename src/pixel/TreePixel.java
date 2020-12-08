@@ -5,7 +5,7 @@ import static pixel.Utils.listOfChanges;
 import java.util.List;
 import processing.core.PApplet;
 
-public class TreePixel extends Pixel {
+public class TreePixel extends SolidPixel {
 
   private int lifePoints;
 

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import processing.core.PApplet;
 
-public class FallingPixel extends Pixel {
+public abstract class FallingPixel extends Pixel {
 
   @Override
   public int color(PApplet applet) {
@@ -20,7 +20,7 @@ public class FallingPixel extends Pixel {
     } else {
       return Utils.listOfChanges(
           new Change(x, y, new Pixel()),
-          new Change(x, y + 1, new FallingPixel())
+          new Change(x, y + 1, this)
       );
     }
   }

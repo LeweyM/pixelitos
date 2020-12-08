@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import processing.core.PApplet;
 
-public class SeedPixel extends Pixel {
+public class SeedPixel extends FallingPixel {
 
   @Override
   public int color(PApplet applet) {
@@ -25,22 +25,15 @@ public class SeedPixel extends Pixel {
     if (below.isSoil()) {
       SoilPixel soil = (SoilPixel) below;
       if (soil.fullyAlive() && germinates()) {
-        final ArrayList<Change> changes = new ArrayList<>();
-        changes.add(new Change(x, y + 1, new TreePixel()));
-        return changes;
+        return Utils.listOfChanges(new Change(x, y + 1, new TreePixel()));
       }
     }
 
     if (!below.isEmpty()) {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, new Pixel()));
-      return changes;
-    } else {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, new Pixel()));
-      changes.add(new Change(x, y + 1, new SeedPixel()));
-      return changes;
+      return Utils.listOfChanges(new Change(x, y, new Pixel()));
     }
+
+    return super.process(m,x,y);
   }
 
   private boolean germinates() {

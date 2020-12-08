@@ -1,11 +1,9 @@
 package pixel;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import processing.core.PApplet;
 
-public class SoilPixel extends SolidPixel {
+public class SoilPixel extends PowderPixel {
 
   private static final int MAX_LIFEPOINTS = 200;
   private int lifePoints;
@@ -21,8 +19,6 @@ public class SoilPixel extends SolidPixel {
     final Pixel twoUp = m.get(x, y - 2);
     final Pixel oneDown = m.get(x, y + 1);
     final Pixel twoDown = m.get(x, y + 2);
-    final Pixel belowLeft = m.get(x-1, y + 1);
-    final Pixel belowRight = m.get(x+1, y + 1);
 
     if (fullyAlive()) {
       // todo: optimize
@@ -39,24 +35,7 @@ public class SoilPixel extends SolidPixel {
       die();
     }
 
-    if (oneDown.isEmpty()) {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, new Pixel()));
-      changes.add(new Change(x, y + 1, new SoilPixel()));
-      return changes;
-    } else if (belowLeft.isEmpty()) {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, new Pixel()));
-      changes.add(new Change(x-1, y + 1, new SoilPixel()));
-      return changes;
-    } else if (belowRight.isEmpty()) {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, new Pixel()));
-      changes.add(new Change(x+1, y + 1, new SoilPixel()));
-      return changes;
-    } else {
-      return Collections.emptyList();
-    }
+    return super.process(m, x, y);
   }
 
   public boolean fullyAlive() {
