@@ -2,6 +2,7 @@ import static pixel.Pixel.EMPTY_PIXEL;
 
 import java.time.Duration;
 import java.time.Instant;
+import pixel.ButterFlyPixel;
 import pixel.MarkedBufferMatrix;
 import pixel.Matrix;
 import pixel.Pixel;
@@ -37,6 +38,7 @@ public class Main extends PApplet {
         new PixelTypeButton(new SandPixel()),
         new PixelTypeButton(new WallPixel()),
         new PixelTypeButton(new WormPixel(), 100),
+        new PixelTypeButton(new ButterFlyPixel(), 100),
     };
     defaultPixel = new SandPixel();
     matrix = new MarkedBufferMatrix(size);
