@@ -1,17 +1,15 @@
 import static pixel.Pixel.EMPTY_PIXEL;
 
-import java.util.ArrayList;
-import java.util.List;
-import pixel.BufferMatrix;
-import pixel.FallingPixel;
+import java.time.Duration;
+import java.time.Instant;
 import pixel.MarkedBufferMatrix;
 import pixel.Matrix;
 import pixel.Pixel;
 import pixel.SandPixel;
-import pixel.SeaWeedPixel;
 import pixel.SeedPixel;
 import pixel.SoilPixel;
 import pixel.WallPixel;
+import pixel.WormPixel;
 import processing.core.PApplet;
 
 public class Main extends PApplet {
@@ -20,10 +18,11 @@ public class Main extends PApplet {
   private final int size = 50;
   private final int resolution = 800;
   private final int d = resolution / size;
-  private List<PixelTypeButton> pixelButtons;
   private Pixel defaultPixel;
   private boolean eraseMode = false;
-  private Pixel[] pixelTypes;
+  private Instant startedThrottling = Instant.now();
+  private long throttleSpeed;
+  private PixelTypeButton[] buttons;
 
   public void settings() {
     size(resolution, resolution);
@@ -32,17 +31,15 @@ public class Main extends PApplet {
   @Override
   public void setup() {
     super.setup();
-    pixelTypes = new Pixel[]{
-        new SeedPixel(),
-        new SoilPixel(),
-        new FallingPixel(),
-        new SandPixel(),
-        new WallPixel(),
-        new SeaWeedPixel(),
+    this.buttons = new PixelTypeButton[]{
+        new PixelTypeButton(new SoilPixel()),
+        new PixelTypeButton(new SeedPixel(), 100),
+        new PixelTypeButton(new SandPixel()),
+        new PixelTypeButton(new WallPixel()),
+        new PixelTypeButton(new WormPixel(), 100),
     };
     defaultPixel = new SandPixel();
     matrix = new MarkedBufferMatrix(size);
-    setupButtons();
 //    frameRate(10);
   }
 
@@ -61,15 +58,24 @@ public class Main extends PApplet {
   }
 
   private void click() {
-    if (mousePressed) {
-      final int x = mouseX / d;
-      final int y = mouseY / d;
-      if (this.eraseMode) {
-        matrix.set(x, y, new Pixel());
-      } else {
-        matrix.set(x, y, this.defaultPixel);
-      }
+    if (!mouseThrottled() && mousePressed) {
+      layBrick();
+      this.startedThrottling = Instant.now();
     }
+  }
+
+  private void layBrick() {
+    final int x = mouseX / d;
+    final int y = mouseY / d;
+    if (this.eraseMode) {
+      matrix.set(x, y, new Pixel());
+    } else {
+      matrix.set(x, y, this.defaultPixel);
+    }
+  }
+
+  private boolean mouseThrottled() {
+    return Instant.now().isBefore(this.startedThrottling.plus(Duration.ofMillis(this.throttleSpeed)));
   }
 
   @Override
@@ -89,24 +95,28 @@ public class Main extends PApplet {
   }
 
   private void buttons() {
-    for (PixelTypeButton button: pixelButtons) {
+    int x = 15;
+    for (PixelTypeButton button: buttons) {
       fill(button.pixel.color(this));
-      ellipse(button.x, button.y, 15, 15);
-      if (mousePressed && dist(mouseX, mouseY, button.x, button.y) <= 15.0) {
-        this.defaultPixel = button.pixel;
+      ellipse(x, 30, 15, 15);
+      if (mousePressed && dist(mouseX, mouseY, x, 30) <= 15.0) {
+        setPixel(button.pixel);
+        this.throttleSpeed = button.throttleSpeed();
       }
+      x += 30;
     }
   }
 
-  private void setupButtons() {
-    pixelButtons = new ArrayList<>();
-    for (int i = 0; i < pixelTypes.length; i++) {
-      setPixelTypeButton(30 * i + 30, 30, pixelTypes[i]);
+  private void setPixel(Pixel pixel) {
+    try {
+      this.defaultPixel = (Pixel) Class.forName(pixel.getClass().getName()).newInstance();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
     }
-  }
-
-  private void setPixelTypeButton(int x, int y, Pixel pixel) {
-    pixelButtons.add(new PixelTypeButton(x, y, 15, pixel));
   }
 
   private void drawCells() {
