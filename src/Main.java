@@ -115,7 +115,7 @@ public class Main extends PApplet {
   private void buttons() {
     int x = 15;
     for (PixelTypeButton button: buttons) {
-      fill(button.pixel.color(this));
+      fill(button.pixel.red(), button.pixel.green(), button.pixel.blue());
       ellipse(x, 30, 15, 15);
       if (mousePressed && dist(mouseX, mouseY, x, 30) <= 15.0) {
         this.defaultPixel = button.pixel;
@@ -167,15 +167,23 @@ public class Main extends PApplet {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         final Pixel pixel = matrix.get(x, y);
-        if (pixel.isEmpty()) {
-//          draw(x, y, color(174 + (y * 3), 214, 255));
-        } else {
-          draw(x, y, pixel.color(this));
+        if (!pixel.isEmpty()) {
+          if (pixel.red() != 255) {
+            drawFAST(x, y, pixel);
+          } else {
+            draw(x, y, pixel.color(this));
+          }
         }
       }
     }
   }
+  private void drawFAST(int x, int y, Pixel pixel) {
+    fill(pixel.red(), pixel.green(), pixel.blue());
+    noStroke();
+    rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+  }
 
+  @Deprecated
   private void draw(int x, int y, int color) {
     fill(color);
     noStroke();

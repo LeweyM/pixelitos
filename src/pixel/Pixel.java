@@ -8,6 +8,19 @@ public class Pixel {
 
   public static final Class<Pixel> EMPTY_PIXEL = Pixel.class;
 
+  public int red() {
+    return 255;
+  }
+
+  public int green() {
+    return 255;
+  }
+
+  public int blue() {
+    return 255;
+  }
+
+  @Deprecated
   public int color(PApplet applet) {
     return applet.color(255, 255, 255);
   }

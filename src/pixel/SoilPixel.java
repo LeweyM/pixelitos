@@ -1,7 +1,6 @@
 package pixel;
 
 import java.util.List;
-import processing.core.PApplet;
 
 public class SoilPixel extends PowderPixel {
 
@@ -9,8 +8,18 @@ public class SoilPixel extends PowderPixel {
   private int lifePoints;
 
   @Override
-  public int color(PApplet applet) {
-    return applet.color(62, 49 + (lifePoints / 2), 23);
+  public int red() {
+    return 62;
+  }
+
+  @Override
+  public int green() {
+    return 49 + (lifePoints / 2);
+  }
+
+  @Override
+  public int blue() {
+    return 23;
   }
 
   @Override
