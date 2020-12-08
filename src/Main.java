@@ -18,7 +18,7 @@ public class Main extends PApplet {
   private Matrix matrix;
   private final int size = 50;
   private final int resolution = 800;
-  private final int d = resolution / size;
+  private final int pixelSize = resolution / size;
   private Pixel defaultPixel;
   private boolean eraseMode = false;
   private Instant startedThrottling = Instant.now();
@@ -70,8 +70,8 @@ public class Main extends PApplet {
   }
 
   private void layBrick() {
-    final int x = mouseX / d;
-    final int y = mouseY / d;
+    final int x = mouseX / pixelSize;
+    final int y = mouseY / pixelSize;
     if (this.eraseMode) {
       matrix.set(x, y, new Pixel());
     } else {
@@ -86,8 +86,8 @@ public class Main extends PApplet {
   @Override
   public void mousePressed() {
     super.mousePressed();
-    final int x = mouseX / d;
-    final int y = mouseY / d;
+    final int x = mouseX / pixelSize;
+    final int y = mouseY / pixelSize;
     if (matrix.get(x, y).getClass() != EMPTY_PIXEL) {
       this.eraseMode = true;
     }
@@ -129,7 +129,12 @@ public class Main extends PApplet {
   private void drawCells() {
     for (int y = 0; y < size; y++) {
       for (int x = 0; x < size; x++) {
-        draw(x, y, matrix.get(x, y).color(this));
+        final Pixel pixel = matrix.get(x, y);
+        if (pixel.isEmpty()) {
+          draw(x, y, color(174 + (y * 3), 214, 255));
+        } else {
+          draw(x, y, pixel.color(this));
+        }
       }
     }
   }
@@ -137,7 +142,7 @@ public class Main extends PApplet {
   private void draw(int x, int y, int color) {
     fill(color);
     noStroke();
-    rect(x * d, y * d, d, d);
+    rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
   }
 
   public static void main(String... args) {
