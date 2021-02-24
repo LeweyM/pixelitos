@@ -7,6 +7,16 @@ import processing.core.PApplet;
 
 public class TreePixel extends SolidPixel {
 
+  private final int direction;
+
+  public TreePixel() {
+    direction = 0;
+  }
+
+  private TreePixel(int i) {
+    direction = i;
+  }
+
   private int lifePoints;
 
   @Override
@@ -31,17 +41,34 @@ public class TreePixel extends SolidPixel {
 
   @Override
   public List<Change> process(Matrix m, int x, int y) {
-    lifePoints+=10;
+    lifePoints += 1;
 
-    if (canGrow() && m.get(x, y-1).isEmpty()) {
+    if (canGrow() && m.get(x + direction, y - 1).isEmpty()) {
+//      if (branches()) {
+//        if (System.nanoTime() % 2 == 0) {
+//          return listOfChanges(
+//              new Change(x + 1, y - 1, new TreePixel(1)),
+//              new Change(x, y - 1, new TreePixel(direction))
+//          );
+//        } else {
+//          return listOfChanges(
+//              new Change(x + 1, y - 1, new TreePixel(-1)),
+//              new Change(x, y - 1, new TreePixel(direction))
+//          );
+//        }
+//      }
       if (blooms()) {
         return listOfChanges(new Change(x, y, new CanopyPixel()));
       } else {
-        return listOfChanges(new Change(x, y-1, new TreePixel()));
+        return listOfChanges(new Change(x + direction, y - 1, new TreePixel(direction)));
       }
     } else {
       return super.process(m, x, y);
     }
+  }
+
+  private boolean branches() {
+    return Math.random() > 0.9;
   }
 
   private boolean blooms() {
@@ -50,6 +77,6 @@ public class TreePixel extends SolidPixel {
   }
 
   private boolean canGrow() {
-    return this.lifePoints > 150;
+    return this.lifePoints == 15;
   }
 }

@@ -27,25 +27,46 @@ public class WaterPixel extends Pixel {
   @Override
   public List<Change> process(Matrix m, int x, int y) {
 
-    final Pixel other = m.get(x, y + 1);
-    if (other.isEmpty()) {
-      return Utils.listOfChanges(
-          new Change(x, y, m.get(x, y + 1)),
-          new Change(x, y + 1, new WaterPixel())
-      );
+    // down
+    if (m.get(x, y + 1).isEmpty()) {
+      return swap(m, x, y, x, y + 1);
     }
 
-    for (int i = -1; i <= 1; i++) {
-      for (int j = 0; j <= 1; j++) {
-        if (m.get(x + i, y + j).isEmpty()) {
-          return Utils.listOfChanges(
-              new Change(x, y, m.get(x, y + 1)),
-              new Change(x + i, y + j, new WaterPixel())
-          );
-        }
+    if (System.nanoTime() % 2 != 0) {
+      if (m.get(x - 1, y + 1).isEmpty()) {
+        return swap(m, x, y, x - 1, y + 1);
+      }
+      if (m.get(x + 1, y + 1).isEmpty()) {
+        return swap(m, x, y, x + 1, y + 1);
+      }
+      if (m.get(x - 1, y).isEmpty()) {
+        return swap(m, x, y, x - 1, y);
+      }
+      if (m.get(x + 1, y).isEmpty()) {
+        return swap(m, x, y, x + 1, y);
+      }
+    } else {
+      if (m.get(x + 1, y + 1).isEmpty()) {
+        return swap(m, x, y, x + 1, y + 1);
+      }
+      if (m.get(x - 1, y + 1).isEmpty()) {
+        return swap(m, x, y, x - 1, y + 1);
+      }
+      if (m.get(x + 1, y).isEmpty()) {
+        return swap(m, x, y, x + 1, y);
+      }
+      if (m.get(x - 1, y).isEmpty()) {
+        return swap(m, x, y, x - 1, y);
       }
     }
 
     return super.process(m, x, y);
+  }
+
+  private List<Change> swap(Matrix m, int x, int y, int x2, int y2) {
+    return Utils.listOfChanges(
+        new Change(x, y, m.get(x2, y2)),
+        new Change(x2, y2, m.get(x, y))
+    );
   }
 }

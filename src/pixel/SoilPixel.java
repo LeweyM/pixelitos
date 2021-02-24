@@ -4,6 +4,7 @@ import java.util.List;
 
 public class SoilPixel extends PowderPixel {
 
+  private int step = 0;
   private static final int MAX_LIFEPOINTS = 200;
   private int lifePoints;
 
@@ -24,10 +25,18 @@ public class SoilPixel extends PowderPixel {
 
   @Override
   public List<Change> process(Matrix m, int x, int y) {
+    step++;
+
     final Pixel oneUp = m.get(x, y - 1);
     final Pixel twoUp = m.get(x, y - 2);
     final Pixel oneDown = m.get(x, y + 1);
     final Pixel twoDown = m.get(x, y + 2);
+
+//    if (step % 100 == 0 && oneUp.getClass() == WaterPixel.class) {
+//      if (Math.random() > 0.9) {
+//        return Utils.listOfChanges(new Change(x, y-1, new SeaWeedPixel()));
+//      }
+//    }
 
     if (fullyAlive()) {
       // todo: optimize

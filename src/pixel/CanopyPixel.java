@@ -39,9 +39,9 @@ public class CanopyPixel extends SolidPixel {
     final Pixel leftLeftDown = m.get(x - 2, y + 1);
     final Pixel below = m.get(x, y + 1);
 
-    if (age == 10000) {
-      return listOfChanges(new Change(x, y, new FirePixel()));
-    }
+//    if (age == 10000) {
+//      return listOfChanges(new Change(x, y, new FirePixel()));
+//    }
 
     if (age % 50 == 0) {
       if (below.getClass() == TreePixel.class) {

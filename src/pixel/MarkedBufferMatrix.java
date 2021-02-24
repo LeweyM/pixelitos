@@ -1,6 +1,10 @@
 package pixel;
 
+import static java.awt.geom.Point2D.distance;
+
+import com.sun.jmx.remote.internal.ArrayQueue;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 import processing.core.PGraphics;
 
@@ -29,62 +33,87 @@ public class MarkedBufferMatrix implements Matrix {
   }
 
   public Matrix next(PGraphics chunk, int pixSize) {
-    Stack<List<Change>> changes = new Stack<>();
     boolean[] marked = new boolean[size];
 
     Matrix next = copy();
 
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
+        List<List<Change>> changes = new Stack<>();
         changes.add(get(x, y).process(this, x, y));
+        processChanges(changes, marked, next);
       }
     }
 
-    changes.forEach(change -> {
-      if (change.size() == 2 && change.get(0).pixel.isEmpty()) {
-        // swap
-        final Change destination = change.get(1);
-        boolean destinationIsMarked = marked[index(destination.x(), destination.y())];
-        if (destinationIsMarked) {
-          // todo: density/water/etc.
-        } else {
-          // todo: conflict resolution
-          change.forEach(c -> {
-            next.set(c.x(), c.y(), c.pixel);
-          });
-          marked[index(destination.x(), destination.y())] = true;
-        }
-      } else {
-        change.forEach(c -> {
-          next.set(c.x(), c.y(), c.pixel);
-        });
-      }
-    });
-
-    chunk.noStroke();
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < height; y++) {
-        Pixel pixel = get(x, y);
-        if (pixel.isEmpty()) {
-          chunk.fill(y*5, 214, 255);
-          chunk.rect(x*pixSize, y*pixSize, pixSize, pixSize);
-        } else {
-          chunk.fill(pixel.red(), pixel.green(), pixel.blue());
-          chunk.rect(x*pixSize, y*pixSize, pixSize, pixSize);
-        }
-      }
-    }
+    paint(chunk, pixSize);
 
     return next;
   }
 
+  public Matrix onlyPaint(PGraphics chunk, int pixSize) {
+    paint(chunk, pixSize);
+    return this;
+  }
+
+  private void paint(PGraphics chunk, int pixSize) {
+    final Sky sky = new Sky(height, width);
+    chunk.noStroke();
+
+    final int moonY = sky.moonY();
+    final int moonX = sky.moonX();
+    final int brightness = (int) (sky.brightness() * 255);
+    final int horizon = height / 2;
+
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        Pixel pixel = get(x, y);
+        if (pixel.isEmpty()) {
+          if (distance(x, y, moonX, moonY) < 5) {
+            chunk.fill(255, 255, 255);
+          } else {
+            int distanceFromBottom = height - y;
+            int r = horizon - Math.min(distanceFromBottom, horizon);
+            chunk.fill(r + brightness, brightness, brightness);
+          }
+          chunk.rect(x * pixSize, y * pixSize, pixSize, pixSize);
+        } else {
+          chunk.fill(pixel.red(), pixel.green(), pixel.blue());
+          chunk.rect(x * pixSize, y * pixSize, pixSize, pixSize);
+        }
+      }
+    }
+  }
+
+  private void processChanges(List<List<Change>> changeSets, boolean[] marked, Matrix next) {
+    changeSets.forEach(changeSet -> {
+      if (changeSet.size() == 2) {
+        // todo: if denser obj is going down, swap, else do nothing
+        // swap
+        final Change a = changeSet.get(0);
+        final Change b = changeSet.get(1);
+        if (!marked[index(a.x(), a.y())] && !marked[index(b.x(), b.y())]) {
+          next.set(a.x(), a.y(), a.pixel);
+          next.set(b.x(), b.y(), b.pixel);
+          marked[index(a.x(), a.y())] = true;
+          marked[index(b.x(), b.y())] = true;
+        }
+      } else {
+        changeSet.forEach(c -> next.set(c.x(), c.y(), c.pixel));
+      }
+    });
+  }
+
   public Pixel get(int x, int y) {
-    if (y >= height || y < 0 || x >= width || x < 0) return new WallPixel();
+    if (y >= height || y < 0 || x >= width || x < 0) {
+      return new WallPixel();
+    }
     return pixels[index(x, y)];
   }
 
   public void set(int x, int y, Pixel p) {
-    if (y >= height || y < 0 || x >= width || x < 0) return;
+    if (y >= height || y < 0 || x >= width || x < 0) {
+      return;
+    }
     pixels[index(x, y)] = p;
   }
 

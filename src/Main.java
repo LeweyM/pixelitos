@@ -3,9 +3,7 @@ import static pixel.Pixel.EMPTY_PIXEL;
 import java.time.Duration;
 import java.time.Instant;
 import pixel.ButterFlyPixel;
-import pixel.FirePixel;
 import pixel.MarkedBufferMatrix;
-import pixel.Matrix;
 import pixel.Pixel;
 import pixel.SandPixel;
 import pixel.SeedPixel;
@@ -15,19 +13,22 @@ import pixel.WaterPixel;
 import pixel.WormPixel;
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.event.KeyEvent;
 
 public class Main extends PApplet {
 
   private MarkedBufferMatrix matrix;
   private final int size = 100;
-  private final int aspectRatio = 3;
-  private final int resolution = 600;
+  private final int aspectRatio = 2;
+  private final int resolution = 800;
   private final int pixelSize = resolution / size;
   private Pixel defaultPixel;
   private boolean eraseMode = false;
   private Instant startedThrottling = Instant.now();
   private long throttleSpeed;
   private PixelTypeButton[] buttons;
+  private boolean freeze;
+  private boolean isInStepperMode;
 
   public void settings() {
     size(resolution * aspectRatio, resolution, JAVA2D);
@@ -37,7 +38,7 @@ public class Main extends PApplet {
   public void setup() {
     super.setup();
     this.buttons = new PixelTypeButton[]{
-        new PixelTypeButton(new SoilPixel()),
+        new PixelTypeButton(new SoilPixel(), 1),
         new PixelTypeButton(new SeedPixel(), 100),
         new PixelTypeButton(new SandPixel()),
         new PixelTypeButton(new WallPixel()),
@@ -46,44 +47,74 @@ public class Main extends PApplet {
         new PixelTypeButton(new WaterPixel(), 1),
     };
     defaultPixel = new SandPixel();
-    matrix = new MarkedBufferMatrix(size*aspectRatio, size);
+    matrix = new MarkedBufferMatrix(size * aspectRatio, size);
+    seedWithSoil(2);
 //    frameRate(10);
+    isInStepperMode = false;
   }
 
   public void draw() {
     final PGraphics graphics = createGraphics(width, height, JAVA2D);
     graphics.noStroke();
     graphics.beginDraw();
-    matrix = (MarkedBufferMatrix) matrix.next(graphics, pixelSize);
+    if (freeze) {
+      matrix = (MarkedBufferMatrix) matrix.onlyPaint(graphics, pixelSize);
+    } else {
+      matrix = (MarkedBufferMatrix) matrix.next(graphics, pixelSize);
+    }
     graphics.endDraw();
-    image(graphics, 0 ,0);
+    image(graphics, 0, 0);
 
-//    drawCells();
-    click();
-    buttons();
-    resetButton();
-    fill(200);
-    text(frameRate,20,60);
+    stepperMode();
+
+    final boolean hasClicked = buttons();
+    if (!hasClicked) {
+      handleClick();
+    }
+
+    printFrameRate();
   }
 
-  private void paintBackground() {
-    int y = 0;
-    while (y < resolution) {
-      fill(0 + y, 214, 255);
-      rect(0, y, width, 50);
-      y += 50;
+  private void stepperMode() {
+    if (isInStepperMode) {
+      freeze = true;
     }
   }
 
-  private void resetButton() {
+  private void printFrameRate() {
+    fill(200);
+    text(frameRate, 20, 60);
+  }
+
+  private void seedWithSoil(int soilDensity) {
+    for (int y = 0; y < size; y++) {
+      for (int x = 0; x < size * aspectRatio; x++) {
+        if ((x + y) % Math.round((Math.random() + 1) * soilDensity) == 0) {
+          matrix.set(x, y, new SoilPixel());
+        }
+      }
+    }
+  }
+
+  @Override
+  public void keyPressed(KeyEvent event) {
+    if (event.getKeyCode() == 10) {
+      isInStepperMode = !isInStepperMode;
+    }
+    freeze = false;
+  }
+
+  private boolean resetButton() {
     fill(100, 100, 100);
     ellipse(resolution - 30, 30, 15, 15);
     if (mousePressed && dist(mouseX, mouseY, resolution - 30, 30) < 15) {
       setup();
+      return true;
     }
+    return false;
   }
 
-  private void click() {
+  private void handleClick() {
     if (!mouseThrottled() && mousePressed) {
       layBrick();
       this.startedThrottling = Instant.now();
@@ -101,7 +132,8 @@ public class Main extends PApplet {
   }
 
   private boolean mouseThrottled() {
-    return Instant.now().isBefore(this.startedThrottling.plus(Duration.ofMillis(this.throttleSpeed)));
+    return Instant.now()
+        .isBefore(this.startedThrottling.plus(Duration.ofMillis(this.throttleSpeed)));
   }
 
   @Override
@@ -120,17 +152,21 @@ public class Main extends PApplet {
     this.eraseMode = false;
   }
 
-  private void buttons() {
+  private boolean buttons() {
+    boolean hasClicked;
+    hasClicked = resetButton();
     int x = 15;
-    for (PixelTypeButton button: buttons) {
+    for (PixelTypeButton button : buttons) {
       fill(button.pixel.red(), button.pixel.green(), button.pixel.blue());
       ellipse(x, 30, 15, 15);
       if (mousePressed && dist(mouseX, mouseY, x, 30) <= 15.0) {
         this.defaultPixel = button.pixel;
         this.throttleSpeed = button.throttleSpeed();
+        hasClicked = true;
       }
       x += 30;
     }
+    return hasClicked;
   }
 
   private Pixel getNewPixel() {
@@ -145,57 +181,6 @@ public class Main extends PApplet {
       e.printStackTrace();
     }
     return pixel;
-  }
-
-  private void drawCellsCHUNK() {
-    final PGraphics chunk = createGraphics(width, height);
-    chunk.beginDraw();
-    chunk.noStroke();
-
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final Pixel pixel = matrix.get(x, y);
-        if (pixel.isEmpty()) {
-          drawCHUNK(x, y, color(174 + (y * 3), 214, 255), chunk);
-        } else {
-          drawCHUNK(x, y, pixel.color(this), chunk);
-        }
-      }
-    }
-    chunk.endDraw();
-    image(chunk, 0, 0, width, height);
-  }
-
-  private void drawCHUNK(int x, int y, int color, PGraphics chunk) {
-    chunk.fill(color);
-    chunk.rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-  }
-
-  private void drawCells() {
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final Pixel pixel = matrix.get(x, y);
-        if (!pixel.isEmpty()) {
-          if (pixel.red() != 255) {
-            drawFAST(x, y, pixel);
-          } else {
-            draw(x, y, pixel.color(this));
-          }
-        }
-      }
-    }
-  }
-  private void drawFAST(int x, int y, Pixel pixel) {
-    fill(pixel.red(), pixel.green(), pixel.blue());
-    noStroke();
-    rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-  }
-
-  @Deprecated
-  private void draw(int x, int y, int color) {
-    fill(color);
-    noStroke();
-    rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
   }
 
   public static void main(String... args) {

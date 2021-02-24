@@ -29,7 +29,15 @@ public class LaveePixel extends SolidPixel {
 
   @Override
   public List<Change> process(Matrix m, int x, int y) {
-    if (age++ == 100) {
+    age++;
+    if (age % 1 == 0 && m.get(x, y-1).isCanopy()) {
+      return Utils.listOfChanges(
+          new Change(x, y, m.get(x, y-1)),
+          new Change(x, y-1, this)
+      );
+    }
+
+    if (age == 100) {
       return Utils.listOfChanges(
           new Change(x, y, new Pixel()),
           new Change(x, y-1, new ButterFlyPixel())

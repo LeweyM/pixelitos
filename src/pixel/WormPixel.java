@@ -52,7 +52,7 @@ public class WormPixel extends Pixel {
     final Pixel sideAndUp = m.get(x - direction, y - 1);
 
     // die
-    if (life > 20) {
+    if (life > 30) {
       return Utils.listOfChanges(new Change(x, y, new Pixel()));
     }
 
@@ -77,6 +77,8 @@ public class WormPixel extends Pixel {
         if (sideAndUp.isEmpty()) {
           return Utils.listOfChanges(new Change(x - direction, y - 1, new WormPixel(direction)));
         }
+        // turn
+        return Utils.listOfChanges(new Change(x, y, new WormPixel(-direction)));
       }
     }
 

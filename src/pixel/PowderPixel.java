@@ -19,23 +19,31 @@ public abstract class PowderPixel extends SolidPixel {
     final Pixel belowRight = m.get(x+1, y + 1);
 
     if (!below.isSolid()) {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, below));
-      changes.add(new Change(x, y + 1, this));
-      return changes;
-    } else if (!belowLeft.isSolid()) {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, belowLeft));
-      changes.add(new Change(x-1, y + 1, this));
-      return changes;
-    } else if (!belowRight.isSolid()) {
-      final ArrayList<Change> changes = new ArrayList<>();
-      changes.add(new Change(x, y, belowRight));
-      changes.add(new Change(x+1, y + 1, this));
-      return changes;
-    } else {
-      return Collections.emptyList();
+      return swap(m, x, y, x, y+1);
     }
+    if (System.nanoTime() % 2 != 0) {
+      if (!belowLeft.isSolid()) {
+        return swap(m, x, y, x-1, y+1);
+      }
+      if (!belowRight.isSolid()) {
+        return swap(m, x, y, x+1, y+1);
+      }
+    } else {
+      if (!belowRight.isSolid()) {
+        return swap(m, x, y, x+1, y+1);
+      }
+      if (!belowLeft.isSolid()) {
+        return swap(m, x, y, x-1, y+1);
+      }
+    }
+
+    return Collections.emptyList();
   }
 
+  private List<Change> swap(Matrix m, int x, int y, int x2, int y2) {
+    return Utils.listOfChanges(
+        new Change(x, y, m.get(x2, y2)),
+        new Change(x2, y2, m.get(x, y))
+    );
+  }
 }
